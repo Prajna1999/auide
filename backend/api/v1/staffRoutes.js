@@ -4,37 +4,37 @@ const express = require('express');
 // Create a new router
 const router = express.Router();
 
-// Define a POST route for creating a new museum tenant. 
+// Define a POST route for creating a  new staff
 router.post('/', (req, res) => {
 
-  res.send('Museum created!');
+  res.send('staff created!');
 });
 
-// get list of all museums as an array
+// get list of all staffs as an array
 router.get('/', (req, res)=>{
-    res.send('All tenants returned!');
+    res.send('All staff returned!');
 })
 
-//get the details of a specified musuem id
+//get the details of a specified staff id
 router.get('/:id', (req, res)=>{
 
     const {id}=req.params;
 
-    res.send( `Museum with ${id} returned!`);
+    res.send( `staff with ${id} returned!`);
 })
 
-//update a specific museum
+//update a specific staff
 router.put('/:id', (req,res)=>{
     const {id}=req.params;
 
-    res.send(`Museum with ${id} updated`);
+    res.send(`staff with ${id} updated`);
 })
 
-//delete a museum tenant 
+//delete a staff tenant 
 router.delete('/:id', (req, res)=>{
     const {id}=req.params;
 
-    res.send(`Museum with ${id} removed`);
+    res.send(`staff with ${id} removed`);
 })
 
 // Export the router
