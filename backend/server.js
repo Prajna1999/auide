@@ -2,45 +2,51 @@ const express = require('express');
 const cors=require('cors');
 const bodyParser=require('body-parser');
 const morgan=require('morgan');
-
+const {errorHandler}=require("./src/middlewares/errorHandler")
 require('dotenv').config();
+const helmet=require('helmet');
 
-// imorting routers
-const museumRouter=require("./api/v1/museumRoutes");
-const staffRoutes=require("./api/v1/staffRoutes");
-const exhbitRoutes=require("./api/v1/exhibitRoutes");
-
-const PORT=5001||process.env.PORT;
-
-
-const app = express();
-
-
-//handle cors
+// create an express app
+const app=express();
+app.use(helmet());
 app.use(cors({
-    origin:"http://127.0.0.1:5173"
+  methods:"GET, HEAD, PUT, PATCH, POST, DELETE",
+  credentials:true,
 }))
 
-// middleware for parsing requrest bodies and logging
-app.use(bodyParser.urlencoded({extended:false}));
+// middlewares
+app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(morgan('dev'))
+app.use(bodyParser.urlencoded({extended:true}));
+
+// routes implemented here
 
 
-app.get('/', (req, res)=>{
-    res.send("hello from the server 5001")
+
+
+
+
+
+
+
+//default route
+app.get('/', (req,res)=>{
+  res.send("Hello from express application");
 })
+// catch route not found error
+app.use((req,res,next)=>{
+  const err=new Error('Route not found');
+  err.status=404;
+  next(err);
+});
 
-//mount the museum router at the /api/v1/museums path
 
-app.use('/api/v1/museums', museumRouter);
-app.use('/api/v1/staff', staffRoutes);
-app.use('/api/v1/exhibit', exhbitRoutes);
+app.use(errorHandler);
 
-//start the server
-// 
+// start the server
+const PORT=process.env.PORT||5001;
+
 app.listen(PORT, ()=>{
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server started on port ${PORT}`);
 })
-
 
