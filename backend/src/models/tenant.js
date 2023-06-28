@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.User, { foreignKey: 'id' });
+      this.hasMany(models.Museum, { foreignKey: 'id' });
+      this.hasOne(models.Branding, { foreignKey: 'id' });
     }
   }
   Tenant.init({

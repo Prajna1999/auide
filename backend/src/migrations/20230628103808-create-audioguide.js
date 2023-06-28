@@ -10,7 +10,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       exhbit_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model:"Exhibits",
+          key:"id"
+        },
+        onUpdate:"CASCADE",
+        onDelete:"SET NULL"
       },
       audioguide_name: {
         type: Sequelize.STRING

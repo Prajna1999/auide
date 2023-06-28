@@ -10,7 +10,14 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       museum_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model:"Museums",
+          key:"id"
+        },
+        onUpdate:"CASCADE",
+        onDelete:"SET NULL"
+
       },
       exhibition_name: {
         type: Sequelize.STRING

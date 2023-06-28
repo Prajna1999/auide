@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Museum, { foreignKey: 'id' });
+      this.hasMany(models.AudioGuide, { foreignKey: 'id' });
     }
   }
   Exhibit.init({

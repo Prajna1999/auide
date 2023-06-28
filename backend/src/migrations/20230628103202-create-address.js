@@ -9,6 +9,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      museum_id:{
+        type:Sequelize.INTEGER,
+        references:{
+          model:"Museums",
+          id:"id"
+        },
+        onUpdate:"CASCADE",
+        onDelete:"SET NULL"
+      },
       street: {
         type: Sequelize.STRING
       },
