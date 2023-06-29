@@ -2,7 +2,16 @@ const express = require('express');
 const cors=require('cors');
 const bodyParser=require('body-parser');
 const morgan=require('morgan');
-const {errorHandler}=require("./src/middlewares/errorHandler")
+const {errorHandler}=require("./src/middlewares/errorHandler");
+// import routers
+const addressRouter=require('./src/api/v1/addressRouter');
+const audioguideRouter=require('./src/api/v1/audioguideRouter');
+const brandingRouter=require('./src/api/v1/brandingRouter');
+const exhibitRouter=require('./src/api/v1/exhibitRouter');
+const museumRouter=require('./src/api/v1/museumRouter');
+const tenantRouter=require('./src/api/v1/tenantRouter');
+const userRouter=require('./src/api/v1/userRouter');
+
 require('dotenv').config();
 const helmet=require('helmet');
 
@@ -14,12 +23,21 @@ app.use(cors({
   credentials:true,
 }))
 
-// middlewares
+//middlewares
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 // routes implemented here
+app.use('/api/v1/addresses', addressRouter);
+app.use('/api/v1/audioguide', audioguideRouter);
+app.use('/api/v1/branding', brandingRouter);
+app.use('/api/v1/exhibits', exhibitRouter);
+app.use('/api/v1/museuems', museumRouter);
+app.use('/api/v1/tenants', tenantRouter);
+app.use('/api/v1/users', userRouter);
+
+
 
 
 
