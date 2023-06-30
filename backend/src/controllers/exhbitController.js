@@ -1,4 +1,5 @@
-const Exhibit=require('../models/exhibit');
+const { error } = require('console');
+const Exhibit=require('../models').Exhibit;
 const ExhibitController={
   // create a new Exhibit
   createExhibit:async(req,res,next)=>{
@@ -16,6 +17,9 @@ const ExhibitController={
   getExhibitById:async(req,res,next)=>{
     try{
       const exhibit=await Exhibit.findByPk(req.params.id);
+      if(exhibit===null){
+        throw new Error(error.message)
+      }
       res.status(200).send(exhibit)
     }catch(error){
       console.log(error);

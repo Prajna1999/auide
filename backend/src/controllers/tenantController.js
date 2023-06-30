@@ -1,4 +1,4 @@
-const Tenant=require('../models/tenant');
+const Tenant=require('../models').Tenant;
 const TenantController={
   // create a new tenant
   createTenant:async(req,res,next)=>{
@@ -15,8 +15,13 @@ const TenantController={
   // get a tenant by id
   getTenantById:async(req,res,next)=>{
     try{
-      const tenant=await Tenant.findByPk(req.params.id);
-      res.status(200).send(tenant)
+      const tenant=await Tenant.findOne({
+        where:{
+          id:req.params.id
+        },
+        
+      });
+      res.status(200).json(tenant);
     }catch(error){
       console.log(error);
       next(error);

@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 // import the controller function
-const TenantController=require("backend/src/controllers/tenantController.js");
+const TenantController=require("../../controllers/tenantController");
+// const errorHandler=require('../../middlewares/errorHandler')
 
 // create a tenant
 router.post('/', TenantController.createTenant);

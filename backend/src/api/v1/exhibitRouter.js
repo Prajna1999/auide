@@ -1,17 +1,17 @@
 const express = require('express');
-
+const exhibitController=require('../../controllers/exhbitController');
 const router = express.Router();
 
 // create a staff user
-router.post('/', createExhibit);
+router.post('/', exhibitController.createExhibit);
 
 // get a tenant by staff id
-router.get('/:id', getExhibitById);
+router.get('/:id',exhibitController.getExhibitById);
 
 // update tenant by tenant id
-router.put('/:id', updateExhibitById);
+router.put('/:id', exhibitController.updateExhibitById);
 
 // delete tenant by tenant id
-router.delete('/:id', deleteExhibitById);
+router.delete('/:id', exhibitController.deleteExhibitById);
 
 module.exports = router;

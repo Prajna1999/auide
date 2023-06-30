@@ -1,4 +1,4 @@
-const Permission=require('../models/Permission');
+const Permission=require('../models').Permission;
 const PermissionController={
   createPermission:async(req,res,next)=>{
     try{

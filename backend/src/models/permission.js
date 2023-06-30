@@ -20,8 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     user_id: DataTypes.INTEGER,
     tenant_id: DataTypes.INTEGER,
     role:{
-      type:DataTypes.ENUM,
-      value:['admin', 'staff', 'viewer']
+      type:DataTypes.ENUM('admin', 'staff', 'viewer'),
+      
+      defaultValue:'viewer'
     }
   }, {
     sequelize,

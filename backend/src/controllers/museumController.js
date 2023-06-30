@@ -1,4 +1,4 @@
-const Museum=require('../models/museum');
+const Museum=require('../models').Museum;
 const MuseumController={
   // create a new Museum
   createMuseum:async(req,res,next)=>{

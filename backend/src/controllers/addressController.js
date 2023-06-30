@@ -1,4 +1,4 @@
-const Address=require('../models/address');
+const Address=require('../models').Address;
 const AddressController={
   // create a new Address
   createAddress:async(req,res,next)=>{

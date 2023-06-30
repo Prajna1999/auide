@@ -1,4 +1,4 @@
-const Audioguide=require('../models/audioguide');
+const Audioguide=require('../models').Audioguide;
 const AudioguideController={
   // create a new Audioguide
   createAudioguide:async(req,res,next)=>{

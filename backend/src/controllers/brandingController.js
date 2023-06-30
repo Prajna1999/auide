@@ -1,4 +1,4 @@
-const  Branding  = require('../models/branding');
+const  Branding  = require('../models').Branding;
 
 const BrandingController = {
   // Create a new Branding
