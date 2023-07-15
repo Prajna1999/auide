@@ -24,9 +24,12 @@ async function login(req, res, next) {
   }
   
   // Logout functionality
-  function logout(req, res) {
-    req.logout();
-    res.json({ message: 'Logout successful' });
+  function logout(req, res,next) {
+    req.logout((err)=>{
+        if(err) return next(err)
+        res.json({ message: 'Logout successful' });
+    });
+   
   }
   
   module.exports = { login, logout };

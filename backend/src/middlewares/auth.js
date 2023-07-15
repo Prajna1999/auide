@@ -49,14 +49,14 @@ const setupPassport=()=>{
         done(null, user.user_email);
     });
     // deserializing users
-    passport.deserializeUser(async(id, done)=>{
+    passport.deserializeUser(async(email, done)=>{
         try{
             const user=await User.findOnde({
-                where:{user_id:id}
+                where:{user_email:email}
             });
             return done(null, user);
         }catch(error){
-            return done(err)
+            return done(error)
         }
     })
     
