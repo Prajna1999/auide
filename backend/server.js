@@ -2,7 +2,12 @@ const express = require('express');
 const cors=require('cors');
 const bodyParser=require('body-parser');
 const morgan=require('morgan');
+const session=require('express-session');
+const passport=require('passport');
+
+// error handler
 const {errorHandler}=require("./src/middlewares/errorHandler");
+const {setupPassport}=require('./src/middlewares/auth')
 // import routers
 const addressRouter=require('./src/api/v1/addressRouter');
 const audioguideRouter=require('./src/api/v1/audioguideRouter');
@@ -11,6 +16,7 @@ const exhibitRouter=require('./src/api/v1/exhibitRouter');
 const museumRouter=require('./src/api/v1/museumRouter');
 const tenantRouter=require('./src/api/v1/tenantRouter');
 const userRouter=require('./src/api/v1/userRouter');
+const authRouter=require('./src/api/v1/authRouter');
 
 require('dotenv').config();
 const helmet=require('helmet');
@@ -28,7 +34,28 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
+app.use(
+  session({
+      secret: 'your_session_secret',
+      resave: false,
+      saveUninitialized: true
+  })
+);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+setupPassport();
+
+app.get('/', (req, res, next) => {
+  res.send({
+      status: req.user ? true : "user not signed in"
+  });
+})
+
 // routes implemented here
+app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/addresses', addressRouter);
 app.use('/api/v1/audioguide', audioguideRouter);
 app.use('/api/v1/branding', brandingRouter);
@@ -47,7 +74,7 @@ app.use('/api/v1/users', userRouter);
 
 
 
-//default route
+// default route
 app.get('/', (req,res)=>{
   res.send("Hello from express application");
 })
