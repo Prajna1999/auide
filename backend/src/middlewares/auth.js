@@ -30,11 +30,11 @@ const setupPassport=()=>{
                 return done(null, false, {message:'Invalid email'});
             }
     
-            // const isMatch=await bcrypt.compare(password, user.user_password);
+            const isMatch=await bcrypt.compare(password, user.user_password);
             // if invalid password provided
-            // if(!isMatch){
-            //     return done(null, false, {message:'Invalid Password'});
-            // }
+            if(!isMatch){
+                return done(null, false, {message:'Invalid Password'});
+            }
             // if email and password match, return the user object
             return done(null, user)
         }catch(error){
@@ -51,7 +51,7 @@ const setupPassport=()=>{
     // deserializing users
     passport.deserializeUser(async(email, done)=>{
         try{
-            const user=await User.findOnde({
+            const user=await User.findOne({
                 where:{user_email:email}
             });
             return done(null, user);

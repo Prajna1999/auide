@@ -32,4 +32,34 @@ async function login(req, res, next) {
    
   }
   
-  module.exports = { login, logout };
+async function signup(req,res,next){
+    try{
+        const {email, password}=req.body;
+
+        // check if the current user already exist
+        const existingUser=await User.findOne({
+            where:{user_email:email}
+        })
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email already exists' });
+          }
+          
+        // hashs the password
+        const hashedPassword=await bcrypt.hash(password,10);
+
+        const newUser=await User.create({
+            user_email:email,
+            user_password:hashedPassword,
+            user_role:'staff',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        });
+
+        return res.json({message:'signup successful'})
+    }catch(error){
+        return next(error);
+    }
+}
+
+  module.exports = { login, logout,signup };
