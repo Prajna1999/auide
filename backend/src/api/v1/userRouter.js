@@ -1,11 +1,11 @@
 const express = require('express');
-
+const {ensureAuthenticated, ensureAuthorized}=require('../../middlewares/index');
 const UserController=require('../../controllers/userController')
 
 const router = express.Router();
 
 // create a staff user
-router.post('/', UserController.createUser);
+router.post('/',ensureAuthenticated,  UserController.createUser);
 
 // get a tenant by staff id
 router.get('/:id', UserController.getUser);

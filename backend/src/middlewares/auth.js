@@ -1,10 +1,16 @@
 const passport=require('passport');
+require('dotenv').config();
 const LocalStrategy=require('passport-local').Strategy;
 const bcrypt=require('bcrypt');
+const jwt=require('jsonwebtoken');
 const pg=require('pg');
 const {User}=require('../models');
-const {Sequelize}=require('sequelize')
+const {Sequelize}=require('sequelize');
+const { token } = require('morgan');
 
+const authUser=(user)=>{
+    return jwt.sign({id:user.id}, process.env.JWT_KEY, {expiresIn: 86400});
+}
 
 const setupPassport=()=>{
     const pool=new pg.Pool({
@@ -31,12 +37,13 @@ const setupPassport=()=>{
             }
     
             const isMatch=await bcrypt.compare(password, user.user_password);
-            // if invalid password provided
+            // // if invalid password provided
             if(!isMatch){
                 return done(null, false, {message:'Invalid Password'});
             }
-            // if email and password match, return the user object
-            return done(null, user)
+            // if email and password match, return the user object with the access token
+            const token=authUser(user)
+            return done(null, {user, token});
         }catch(error){
             console.log(error)
             return done(error);
@@ -46,7 +53,7 @@ const setupPassport=()=>{
     
     // serlialize and deserialize user from storing and retrieving from the sessions
     passport.serializeUser((user, done)=>{
-        done(null, user.user_email);
+        done(null, {email:user.user_email, token:user.token});
     });
     // deserializing users
     passport.deserializeUser(async(email, done)=>{

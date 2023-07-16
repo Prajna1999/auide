@@ -1,5 +1,6 @@
 const  User  = require('../models').User;
 
+
 const UserController = {
   // Create a new user
   createUser: async (req, res) => {
