@@ -30,23 +30,25 @@ require('dotenv').config();
 // };
 const ensureAuthenticated = (req, res, next) => {
 
-  let token = req.session.jwt;
-  let status = {
-      message: ""
-  }
+  let authHeader = req.headers['authorization']|| req.headers['Authorization'];
 
-  if (!token) status.message = "No Token is provided.";
 
-  jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
-      if (err) status.message = "Failed to Authenticate Request"
+  if (!authHeader?.startsWith('Bearer ')) return res.status(401).json({"message":"some error in auth headers."});
+  console.log(authHeader);
+  const token=authHeader.split(' ')[1];
+
+  jwt.verify(token, "accessjwtkey", (err, decoded) => {
+      if(err) return res.status(403).json({"message":"invalid token"}) //invalid token
+      req.user=decoded.user_name;
+      next()
 
   })
 
-  if (req.isAuthenticated()) {
-      return next(); // User is authenticated, proceed to the next middleware
-  }
+  // if (req.isAuthenticated()) {
+  //     return next(); // User is authenticated, proceed to the next middleware
+  // }
 
-  res.status(401).send({ "status": false, message: status.message });
+  // res.status(401).send({ "status": false, message: status.message });
 
 
 };

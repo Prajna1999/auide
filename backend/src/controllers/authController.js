@@ -1,4 +1,4 @@
-const passport=require('passport');
+const passport=require('../middlewares/passport');
 const bcrypt=require('bcrypt');
 const User=require('../models').User;
 

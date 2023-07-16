@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/',ensureAuthenticated,ensureAdmin, UserController.registerUser);
 
 // get a tenant by staff id
-router.get('/:id',  UserController.getUser);
+router.get('/:id',ensureAuthenticated,  UserController.getUser);
 
 // update tenant by tenant id
 router.put('/:id',ensureAuthenticated, ensureAdmin, UserController.updateUser);

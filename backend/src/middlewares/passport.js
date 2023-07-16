@@ -39,7 +39,7 @@ passport.use(
           return done(null, false, { message: "Invalid Password" });
         }
         // if email and password match, return the user object with the access token
-        const token = authUser(user);
+        const token = jwt.sign({email:user.user_email},process.env.JWT_KEY, {expiresIn:86400});
         return done(null, { user, token });
       } catch (error) {
         console.log(error);
