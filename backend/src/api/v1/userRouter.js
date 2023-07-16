@@ -1,19 +1,19 @@
 const express = require('express');
-const {ensureAuthenticated, ensureAuthorized}=require('../../middlewares/index');
+const {ensureAuthenticated, ensureAdmin}=require('../../middlewares/index');
 const UserController=require('../../controllers/userController')
 
 const router = express.Router();
 
 // create a staff user
-router.post('/',ensureAuthenticated,  UserController.createUser);
+router.post('/',ensureAuthenticated,ensureAdmin, UserController.registerUser);
 
 // get a tenant by staff id
-router.get('/:id', UserController.getUser);
+router.get('/:id',  UserController.getUser);
 
 // update tenant by tenant id
-router.put('/:id', UserController.updateUser);
+router.put('/:id',ensureAuthenticated, ensureAdmin, UserController.updateUser);
 
 // delete tenant by tenant id
-router.delete('/:id', UserController.deleteUser);
+router.delete('/:id',ensureAuthenticated,ensureAdmin ,UserController.deleteUser);
 
 module.exports = router;

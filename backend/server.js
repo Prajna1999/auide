@@ -3,11 +3,11 @@ const cors=require('cors');
 const bodyParser=require('body-parser');
 const morgan=require('morgan');
 const session=require('express-session');
-const passport=require('passport');
+const passport=require('./src/middlewares/passport');
 
 // error handler
 const {errorHandler}=require("./src/middlewares/errorHandler");
-const {setupPassport}=require('./src/middlewares/auth')
+const {setupPassport}=require('./src/middlewares/passport')
 // import routers
 const addressRouter=require('./src/api/v1/addressRouter');
 const audioguideRouter=require('./src/api/v1/audioguideRouter');
@@ -46,7 +46,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-setupPassport();
+// setupPassport();
 
 app.get('/', (req, res, next) => {
   res.send({

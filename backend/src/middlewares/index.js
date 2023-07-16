@@ -1,37 +1,69 @@
 // middleware to check if the user is authenticated
 const jwt=require('jsonwebtoken');
 require('dotenv').config();
-const ensureAuthenticated=(req,res,next)=>{
-    const authHeader = req.headers.authorization;
+// middleware/authMiddleware.js
 
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
 
-        jwt.verify(token, process.env.JWT_KEY, (err, user) => {
-            if (err) {
-                return res.sendStatus(403);
-            }
+// const { secretKey } = require('../config/keys');
 
-            req.user = user;
-            next();
-        });
+// const ensureAuthenticated = (req, res, next) => {
+//   const token = req.headers.authorization;
+
+//   // Check if the token exists
+//   if (!token) {
+//     return res.status(401).json({ message: 'Unauthorized' });
+//   }
+
+//   try {
+//     // Verify the token
+//     const decoded = jwt.verify(token, process.env.JWT_KEY);
+
+//     // Set the user on the request object
+//     req.user = decoded;
+
+//     // Continue to the next middleware or route handler
+//     next();
+//   } catch (err) {
+//     console.error(err);
+//     res.status(401).json({ message: 'User not logged in' });
+//   }
+// };
+const ensureAuthenticated = (req, res, next) => {
+
+  let token = req.session.jwt;
+  let status = {
+      message: ""
+  }
+
+  if (!token) status.message = "No Token is provided.";
+
+  jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
+      if (err) status.message = "Failed to Authenticate Request"
+
+  })
+
+  if (req.isAuthenticated()) {
+      return next(); // User is authenticated, proceed to the next middleware
+  }
+
+  res.status(401).send({ "status": false, message: status.message });
+
+
+};
+
+
+
+
+
+
+const ensureAdmin = (req, res, next) => {
+    if (req.user && req.user.user_role === 'admin') {
+      next(); // User is admin, continue to the next middleware or route handler
     } else {
-        res.sendStatus(401);
+      res.status(401).json({ message: 'Unauthorized' });
     }
-}
-
-function ensureAuthorized(...allowedRoles) {
-    return (req, res, next) => {
-        const userRole = req.user.role;
-        
-        if (!allowedRoles.includes(userRole)) {
-            return res.status(403).json({ error: 'Access denied' });
-        }
-        
-        // proceed to the next middleware
-        next();
-    }
-}
+  };
+  
 
 
-module.exports={ensureAuthenticated, ensureAuthorized};
+module.exports={ensureAuthenticated, ensureAdmin};
