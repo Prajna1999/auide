@@ -1,37 +1,34 @@
-const passport=require('passport');
-const bcrypt=require('bcrypt');
-const User=require('../models').User;
-const jwt=require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const User = require('../models/user'); // Replace '../models/User' with the correct path to your User model
 
-// Login functionality
+const secretKey = 'your_secret_key_here'; // Replace with your actual secret key for JWT token
 
-exports.loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Find the user by their username
-    const user = await User.findOne({ where: {user_email:email } });
+    // Find the user by email in the database
+    const user = await User.findOne({ email });
 
-    if (!user) {
-      // User not found
-      return res.status(401).json({ error: 'Invalid credentials' });
+    // If the user is not found or the password doesn't match, return an error
+    if (!user || !user.comparePassword(password)) {
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Compare the password with the hashed password in the database
-    const passwordMatch = await bcrypt.compare(password, user.user_password);
+    // User is authenticated, generate a JWT token
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      // Add any other user information you want to include in the token
+    };
 
-    if (!passwordMatch) {
-      // Passwords don't match
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
+    const token = jwt.sign(payload, secretKey, { expiresIn: '1h' }); // Token will expire in 1 hour
 
-    // Create a JWT token with the user ID as the payload
-    const token = jwt.sign({ sub: user.id }, "jwtSecretKey", { expiresIn: '1h' });
-
-    // Send the token in the response
-    res.json({ token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    // Return the token to the client
+    return res.json({ token });
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+module.exports = loginUser;

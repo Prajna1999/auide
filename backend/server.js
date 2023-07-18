@@ -16,7 +16,7 @@ const exhibitRouter=require('./src/api/v1/exhibitRouter');
 const museumRouter=require('./src/api/v1/museumRouter');
 const tenantRouter=require('./src/api/v1/tenantRouter');
 const userRouter=require('./src/api/v1/userRouter');
-const authRouter=require('./src/api/v1/authRouter');
+const authRouter=require('./src/api/v1/authRouter.js');
 
 require('dotenv').config();
 const helmet=require('helmet');
