@@ -3,7 +3,7 @@ const cors=require('cors');
 const bodyParser=require('body-parser');
 const morgan=require('morgan');
 const session=require('express-session');
-const passport=require('./src/middlewares/passport');
+const passport=require('passport');
 
 // error handler
 const {errorHandler}=require("./src/middlewares/errorHandler");
@@ -44,7 +44,9 @@ app.use(
 
 // Passport middleware
 app.use(passport.initialize());
-app.use(passport.session());
+
+require('./src/middlewares/passport');
+// app.use(passport.session());
 
 // setupPassport();
 
