@@ -1,65 +1,34 @@
-const passport=require('../middlewares/passport');
-const bcrypt=require('bcrypt');
-const User=require('../models').User;
+const jwt = require('jsonwebtoken');
+const User = require('../models/user'); // Replace '../models/User' with the correct path to your User model
 
-// Login functionality
-async function login(req, res, next) {
-    passport.authenticate('local', (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
-  
-      if (!user) {
-        return res.status(401).json({ message: info.message });
-      }
-  
-      req.login(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-  
-        return res.json({ message: 'Login successful' });
-      });
-    })(req, res, next);
-  }
-  
-  // Logout functionality
-  function logout(req, res,next) {
-    req.logout((err)=>{
-        if(err) return next(err)
-        res.json({ message: 'Logout successful' });
-    });
-   
-  }
-  
-async function signup(req,res,next){
-    try{
-        const {email, password}=req.body;
+const secretKey = 'your_secret_key_here'; // Replace with your actual secret key for JWT token
 
-        // check if the current user already exist
-        const existingUser=await User.findOne({
-            where:{user_email:email}
-        })
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
-        if (existingUser) {
-            return res.status(400).json({ message: 'Email already exists' });
-          }
-          
-        // hashs the password
-        const hashedPassword=await bcrypt.hash(password,10);
+  try {
+    // Find the user by email in the database
+    const user = await User.findOne({ email });
 
-        const newUser=await User.create({
-            user_email:email,
-            user_password:hashedPassword,
-            user_role:'staff',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
-
-        return res.json({message:'signup successful'})
-    }catch(error){
-        return next(error);
+    // If the user is not found or the password doesn't match, return an error
+    if (!user || !user.comparePassword(password)) {
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
-}
 
-  module.exports = { login, logout,signup };
+    // User is authenticated, generate a JWT token
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      // Add any other user information you want to include in the token
+    };
+
+    const token = jwt.sign(payload, secretKey, { expiresIn: '1h' }); // Token will expire in 1 hour
+
+    // Return the token to the client
+    return res.json({ token });
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = loginUser;
